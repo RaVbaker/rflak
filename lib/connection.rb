@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'httparty'
+require 'entry'
 
 module Rflak
+  # Usage class for fetching 'flak's from service. 
   class Connection
     include HTTParty
 
@@ -11,8 +13,14 @@ module Rflak
       flak = Connection.new
       perform_url = FLAK_API_URL + "/type:#{ type }"
       perform_url += yield(flak) if block_given?
-      puts perform_url
-      get(perform_url)
+      parse_response get(perform_url)
+    end
+
+
+    def self.parse_response(response)
+      response['entries'].map do |entry|
+        Entry.new(entry)
+      end
     end
 
 
