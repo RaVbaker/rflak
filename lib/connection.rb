@@ -9,11 +9,17 @@ module Rflak
 
     FLAK_API_URL = 'http://api.flaker.pl/api'
 
+    attr_reader :perform_url
+
+    def initialize(type)
+      @perform_url = FLAK_API_URL + "/type:#{ type }"
+    end
+
+    
     def self.go(type)
-      flak = Connection.new
-      perform_url = FLAK_API_URL + "/type:#{ type }"
-      perform_url += yield(flak) if block_given?
-      parse_response get(perform_url)
+      flak = Connection.new(type)
+      yield(flak) if block_given?
+      parse_response get(flak.perform_url)
     end
 
 
@@ -24,69 +30,68 @@ module Rflak
     end
 
 
-    # TODO: rewrite definitions
     def login(value)
-      "/login:#{ value }"
+      @perform_url += "/login:#{ value }"
     end
 
 
     def url(value)
-      "/url:#{ value }"
+      @perform_url += "/url:#{ value }"
     end
 
 
     def entry_id(value)
-      "/entry_id:#{ value }"
+      @perform_url += "/entry_id:#{ value }"
     end
 
 
     def source(value)
-      "/source:#{ value }"
+      @perform_url += "/source:#{ value }"
     end
 
 
     def tag(value)
-      "/tag:#{ value }"
+      @perform_url += "/tag:#{ value }"
     end
 
 
     def mode(value)
-      "/mode:#{ value }"
+      @perform_url += "/mode:#{ value }"
     end
 
 
     def avatars(value)
-      "/avatars:#{ value }"
+      @perform_url += "/avatars:#{ value }"
     end
 
 
     def limit(value)
-      "/limit:#{ value }"
+      @perform_url += "/limit:#{ value }"
     end
 
 
     def from(value)
-      "/from:#{ value }"
+      @perform_url += "/from:#{ value }"
     end
 
 
     def start(value)
-      "/start:#{ value }"
+      @perform_url += "/start:#{ value }"
     end
 
 
     def since(value)
-      "/since:#{ value }"
+      @perform_url += "/since:#{ value }"
     end
 
 
     def sort(value)
-      "/sort:#{ value }"
+      @perform_url += "/sort:#{ value }"
     end
 
 
     def comments(value)
-      "/comments:#{ value }"
+      @perform_url += "/comments:#{ value }"
     end
   end
 end
