@@ -1,19 +1,19 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'connection'
+require 'flaker'
 require 'rubygems'
 require 'flexmock/test_unit'
 
-class ConnectionTest < Test::Unit::TestCase
+class FlakerTest < Test::Unit::TestCase
   def setup
-    @flak_connection = Rflak::Connection.new('user')
+    @flak_connection = Rflak::Flaker.new('user')
   end
 
 
   def test_fetch
-    flexmock(Rflak::Connection).new_instances.should_receive(:get).and_return(flaker_fake_response)
-    response = Rflak::Connection.go('user') do |conn|
+    flexmock(Rflak::Flaker).new_instances.should_receive(:get).and_return(flaker_fake_response)
+    response = Rflak::Flaker.fetch('user') do |conn|
       conn.login 'dstranz'
       conn.limit 2
     end

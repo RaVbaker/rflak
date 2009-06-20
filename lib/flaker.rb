@@ -3,8 +3,8 @@ require 'httparty'
 require 'entry'
 
 module Rflak
-  # Usage class for fetching 'flak's from service. 
-  class Connection
+  # Utility class for fetching 'flak's from the web.
+  class Flaker
     include HTTParty
 
     FLAK_API_URL = 'http://api.flaker.pl/api'
@@ -15,9 +15,9 @@ module Rflak
       @perform_url = FLAK_API_URL + "/type:#{ type }"
     end
 
-    
-    def self.go(type)
-      flak = Connection.new(type)
+
+    def self.fetch(type)
+      flak = Flaker.new(type)
       yield(flak) if block_given?
       parse_response get(flak.perform_url)
     end
