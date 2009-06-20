@@ -1,9 +1,14 @@
 require 'rubygems'
 require 'httparty'
-require 'user'
 
 module Rflak
-  # Usage class to fetch entries from flaker.pl traker service
+  # Utility class to fetch entries from flaker.pl traker service
+  #
+  # Example:
+  #   Traker.fetch do |traker|
+  #     traker.url 'http://blog.sebastiannowak.net'
+  #     traker.limit 20
+  #   end
   class Traker
     include HTTParty
 
@@ -14,7 +19,7 @@ module Rflak
     def initialize
       @perform_url = FLAK_API_URL
     end
-    
+
 
     def self.fetch
       traker = Traker.new

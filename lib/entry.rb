@@ -1,6 +1,3 @@
-# temporary
-require 'user'
-
 module Rflak
   # Class represents single entry in flaker.pl website. Entry is assigned with user to wich it belongs
   # and can have many comments assigned to it.

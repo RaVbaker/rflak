@@ -1,3 +1,21 @@
 == rflak
 
-You should document your project here.
+rflak is simple gem to use flaker.pl API. flaker.pl is polish microblogging website. For more information
+please visit http://flaker.pl.
+
+You can simply user two classes Flaker and Traker. Flaker class can fetch all entries scoped with
+conditions described in flaker's API. You can check API http://blog.flaker.pl/api described in polish.
+
+  Flaker.fetch('user') do |flak|
+    flak.login 'seban'
+    flak.limit 2
+    flak.tag 'ruby'
+  end
+
+With Traker class it is possible to fetch entries from traker
+service. You can visit http://flaker.pl/traker to see traker in your browser.
+
+  Traker.fetch do |traker|
+    traker.url 'http://blog.sebastiannowak.net'
+    traker.limit 20
+  end

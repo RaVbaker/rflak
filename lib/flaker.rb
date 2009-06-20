@@ -1,9 +1,12 @@
-require 'rubygems'
-require 'httparty'
-require 'entry'
-
 module Rflak
   # Utility class for fetching 'flak's from the web.
+  #
+  # Example:
+  #   Flaker.fetch('user') do |flak|
+  #     flak.login 'seban'
+  #     flak.limit 2
+  #     flak.tag 'ruby'
+  #   end
   class Flaker
     include HTTParty
 
