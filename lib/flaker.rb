@@ -11,6 +11,7 @@ module Rflak
     include HTTParty
 
     FLAK_API_URL = 'http://api.flaker.pl/api'
+    base_uri FLAK_API_URL
 
     attr_reader :perform_url
 

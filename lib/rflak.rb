@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'httparty'
+require 'not_authorized'
 require 'comment'
 require 'user'
 require 'entry'
