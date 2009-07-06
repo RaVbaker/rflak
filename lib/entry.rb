@@ -48,6 +48,37 @@ module Rflak
     end
 
 
+    # Mark entry as good "fajne!"
+    #
+    # user:: User
+    def good(user)
+      Entry.create(user, { 'text' => "@#{ self.id } fajne" })
+    end
+
+
+    # Mark entry as not good "niefajne!"
+    #
+    # user:: User
+    def not_good(user)
+      Entry.create(user, { 'text' => "@#{ self.id } niefajne" })
+    end
+
+    # Mark entry as lans "lans!"
+    #
+    # user:: User
+    def lans(user)
+      Entry.create(user, { 'text' => "@#{ self.id } lans" })
+    end
+
+
+    # Mark entry as stupid "głupie!"
+    #
+    # user:: User
+    def stupid(user)
+      Entry.create(user, { 'text' => "@#{ self.id } głupie" })
+    end
+
+
     private
 
 
