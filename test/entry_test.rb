@@ -1,8 +1,8 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'entry'
-require 'user'
+require 'rflak'
+require 'flexmock/test_unit'
 
 class EntryTest < Test::Unit::TestCase
   def setup
@@ -34,5 +34,31 @@ class EntryTest < Test::Unit::TestCase
 
   def test_new_object
     assert_kind_of(Rflak::User, @entry.user)
+  end
+
+
+  def test_create_new_entry_unauthorized_user
+    user = flexmock('user')
+    user.should_receive(:authorized?).and_return(false)
+
+    assert_raise(Rflak::NotAuthorized) do
+      Rflak::Entry.create(user, 'text' => 'test content')
+    end
+  end
+
+
+  def test_create_new_entry_authorized_user
+    user = flexmock('user')
+    user.should_receive(:authorized?).and_return(true)
+    user.should_receive(:login).and_return('testuser')
+    user.should_receive(:api_key).and_return('test_api_key')
+    response_body =  "\r\n\r\n{\"status\":{\"code\":\"200\",\"text\":\"OK\",\"info\":\"http:\\/\\/flaker.pl\\/f\\/2077989\"}}"
+    response = flexmock('response')
+    response.should_receive(:body).and_return(response_body)
+    flexmock(Net::HTTP).should_receive(:start).and_return(response)
+    flexmock(Rflak::Flaker).should_receive(:fetch).and_return([Rflak::Entry.new])
+
+    response = Rflak::Entry.create(user, 'text' => 'test content')
+    assert_kind_of(Rflak::Entry, response)
   end
 end

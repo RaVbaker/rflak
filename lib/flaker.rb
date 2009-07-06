@@ -27,6 +27,20 @@ module Rflak
     end
 
 
+    # Authorize connetion by user's credentials (login and api key) and perform instruction passed in
+    # block. Raises NotAuthorize exception when user has bad login or api key.
+    #
+    # user:: User
+    def self.auth_connection(user)
+      user.auth unless user.authorized?
+      raise NotAuthorized.new('Not authorized') unless user.authorized?
+      Flaker.basic_auth(user.login, user.api_key)
+      response = yield(Flaker)
+      Flaker.basic_auth('','')
+      return response
+    end
+
+
     def self.parse_response(response)
       response['entries'].map do |entry|
         Entry.new(entry)

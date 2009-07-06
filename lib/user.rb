@@ -54,10 +54,9 @@ module Rflak
     #
     # returns:: Array
     def tags
-      raise NotAuthorized.new('Not authorized') unless authorized?
-      Flaker.basic_auth(@login, @api_key)
-      resp = Flaker.get("/type:tags/login:#{ @login }")
-      Flaker.basic_auth('', '')
+      resp = Flaker.auth_connection(self) do |connection|
+        connection.get("/type:tags/login:#{ @login }")
+      end
       return resp['tags']
     end
 
@@ -66,10 +65,9 @@ module Rflak
     #
     # returns:: Array
     def bookmarks
-      raise NotAuthorized.new('Not authorized') unless authorized?
-      Flaker.basic_auth(@login, @api_key)
-      resp = Flaker.get("/type:bookmarks/login:#{ @login }")
-      Flaker.basic_auth('', '')
+      resp = Flaker.auth_connection(self) do |connection|
+        connection.get("/type:bookmarks/login:#{ @login }")
+      end
       resp['bookmarks'].map do |id|
         Flaker.fetch('show') { |flak| flak.entry_id(id) }
       end
