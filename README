@@ -19,3 +19,31 @@ service. You can visit http://flaker.pl/traker to see traker in your browser.
     traker.url 'http://blog.sebastiannowak.net'
     traker.limit 20
   end
+
+User operations
+
+Authenticate user by login and API key.
+
+  user = User.auth('my_login', 'my_api_key')
+  # user authenticated
+  user.nil? == false
+  # user not authenticated
+  user.nil? == true
+
+Create new entry, only authenticated user can post new entry
+
+  user = User.auth('my_login', 'my_api_key')
+  Entry.create(user, { :text => "My super text" }
+
+Get user's tags, bookmarks, followers and following users:
+
+  user.tags
+  user.bookmarks
+  user.followers
+  user.following
+
+Bookmark entry. Only authorized user can bookmark entry.
+
+  entry = Flaker.fetch('show' { |f| f.entry_id(123456) }
+  user = User.auth('my_login', 'my_api_key')
+  entry.bookmark(user) if user
