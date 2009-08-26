@@ -12,7 +12,7 @@ class FlakerTest < Test::Unit::TestCase
 
 
   def test_fetch
-    flexmock(Rflak::Flaker).new_instances.should_receive(:get).and_return(flaker_fake_response)
+    flexmock(Rflak::Flaker).should_receive(:get).and_return(flaker_fake_response).times(1)
     response = Rflak::Flaker.fetch('user') do |conn|
       conn.login 'dstranz'
       conn.limit 2
@@ -37,6 +37,11 @@ class FlakerTest < Test::Unit::TestCase
 
   def test_entry_id
     assert_equal @flak_connection.perform_url + '/entry_id:1', @flak_connection.entry_id(1)
+  end
+
+
+  def test_story
+    assert_equal @flak_connection.perform_url + '/story:1', @flak_connection.story(1)
   end
 
 
@@ -75,12 +80,6 @@ class FlakerTest < Test::Unit::TestCase
   end
 
 
-  def test_since
-    time = Time.now.to_i
-    assert_equal @flak_connection.perform_url + "/start:#{ time }", @flak_connection.start(time)
-  end
-
-
   def test_sort
     assert_equal @flak_connection.perform_url + '/sort:desc', @flak_connection.sort('desc')
   end
@@ -88,6 +87,11 @@ class FlakerTest < Test::Unit::TestCase
 
   def test_comments
     assert_equal @flak_connection.perform_url + '/comments:false', @flak_connection.comments(false)
+  end
+
+
+  def test_since
+    assert_equal @flak_connection.perform_url + '/since:1234567', @flak_connection.since(1234567)
   end
 
 

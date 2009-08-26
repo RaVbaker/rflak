@@ -63,6 +63,11 @@ module Rflak
     end
 
 
+    def story(story_id)
+      @perform_url += "/story:#{ story_id }"
+    end
+
+
     def source(value)
       @perform_url += "/source:#{ value }"
     end

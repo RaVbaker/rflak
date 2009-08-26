@@ -61,4 +61,67 @@ class EntryTest < Test::Unit::TestCase
     response = Rflak::Entry.create(user, 'text' => 'test content')
     assert_kind_of(Rflak::Entry, response)
   end
+
+
+  def test_bookmark_authorized_user
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:auth').and_return(auth_bad_credentials)
+    user = Rflak::User.new(:login => 'login', :api_key => 'bad_key')
+
+    assert_equal false, user.auth
+    assert_raise(Rflak::NotAuthorized) { @entry.bookmark(user) }
+  end
+
+
+  def test_bookmark_authorized_user
+    bookmark_response =  {"status"=>{"text"=>"OK", "code"=>"200", "info"=>"bookmark created"}}
+    bookmark_list_response = { 'bookmarks' => %w(1 2 3) }
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:auth').once.and_return(auth_good_credentials)
+    flexmock(Rflak::Flaker).should_receive(:get).with("/type:bookmark/action:set/entry_id:#{ @entry.id }").times(1).and_return(bookmark_response)
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:list/source:bookmarks/login:login').times(1).and_return(bookmark_list_response)
+    flexmock(Rflak::Flaker).should_receive(:fetch).with("show", Proc).times(3).and_return(Rflak::Entry.new)
+
+    user = Rflak::User.new(:login => 'login', :api_key => 'good_key')
+
+    resp = @entry.bookmark(user)
+    assert_kind_of(Array, resp)
+    resp.each { |r| assert_kind_of(Rflak::Entry, r) }
+  end
+
+
+  def test_unbookmark_not_authorized_user
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:auth').and_return(auth_bad_credentials)
+    user = Rflak::User.new(:login => 'login', :api_key => 'bad_key')
+
+    assert_equal false, user.auth
+    assert_raise(Rflak::NotAuthorized) { @entry.unbookmark(user) }
+  end
+
+
+  def test_unbookmark_authorized_user
+    bookmark_response =  {"status"=>{"text"=>"OK", "code"=>"200", "info"=>"i dont't know"}}
+    bookmark_list_response = { 'bookmarks' => %w(1 2 3) }
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:auth').once.and_return(auth_good_credentials)
+    flexmock(Rflak::Flaker).should_receive(:get).with("/type:bookmark/action:unset/entry_id:#{ @entry.id }").times(1).and_return(bookmark_response)
+    flexmock(Rflak::Flaker).should_receive(:get).with('/type:list/source:bookmarks/login:login').times(1).and_return(bookmark_list_response)
+    flexmock(Rflak::Flaker).should_receive(:fetch).with("show", Proc).times(3).and_return(Rflak::Entry.new)
+
+    user = Rflak::User.new(:login => 'login', :api_key => 'good_key')
+
+    resp = @entry.unbookmark(user)
+    assert_kind_of(Array, resp)
+    resp.each { |r| assert_kind_of(Rflak::Entry, r) }
+  end
+
+
+  protected
+
+
+  def auth_bad_credentials
+    {"status" => {"code" => "401","text" => "Unauthorized","info" => "authorization is required"}}
+  end
+
+
+  def auth_good_credentials
+    { "status" => {"code" => "200","text" => "OK","info" =>"authorization successful"}}
+  end
 end

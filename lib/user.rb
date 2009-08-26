@@ -55,7 +55,7 @@ module Rflak
     # returns:: Array
     def tags
       resp = Flaker.auth_connection(self) do |connection|
-        connection.get("/type:tags/login:#{ @login }")
+        connection.get("/type:list/source:tags/login:#{ @login }")
       end
       return resp['tags']
     end
@@ -66,11 +66,33 @@ module Rflak
     # returns:: Array
     def bookmarks
       resp = Flaker.auth_connection(self) do |connection|
-        connection.get("/type:bookmarks/login:#{ @login }")
+        connection.get("/type:list/source:bookmarks/login:#{ @login }")
       end
       resp['bookmarks'].map do |id|
         Flaker.fetch('show') { |flak| flak.entry_id(id) }
       end
+    end
+
+
+    # Return login list of users that follow user
+    #
+    # returns:: Array
+    def followers
+      resp = Flaker.auth_connection(self) do |connection|
+        connection.get("/type:list/source:followedby/login:#{ @login }")
+      end
+      return resp['followedby']
+    end
+
+
+    # Returns login list of users following by user
+    #
+    # returns:: Array
+    def following
+      resp = Flaker.auth_connection(self) do |connection|
+        connection.get("/type:list/source:following/login:#{ @login }")
+      end
+      return resp['following']
     end
   end
 end
