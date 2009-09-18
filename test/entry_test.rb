@@ -12,11 +12,24 @@ class EntryTest < Test::Unit::TestCase
         "login"=>"prawnik10" },
       "permalink"=>"http://flaker.pl/f/1899329",
       "timestamp"=>"1245317709",
-      "comments"=>[],
       "time"=>"Thu, 18 Jun 2009 11:35:09 +0200",
       "text"=>"Jakiś fajny tekst wrzucony na flakerka. Przepraszam oryginalnego autora - prawnik10 za zmianę ;)",
       "source"=>"flaker",
-      "data"=>[]
+      "data"=>[],
+      "comments" => [
+        { "text" => "pi\u0119knie.... niez\u0142a kasa, bardzo niez\u0142a.",
+          "time" => "Fri, 18 Sep 2009 10:38:53 +0200",
+          "datetime" => "2009-09-18 10:38:53",
+          "timestamp" => "1253263133",
+          "permalink" => "http://flaker.pl/f/2605378-sicamp-wygral-projekt-roadar-ktory-bedzie-rowniez-realizowany-przez-polakow",
+          "user" => {
+            "login" =>"az",
+            "avatar" => "http:\static0.flaker.pl/static/images/flaker/user_generated/u_55_1238970606.jpg_50.jpeg",
+            "url" => "http://flaker.pl/az",
+            "sex" => "m" },
+          "related_id" => "2605378",
+          "subsource" => "internal_comment"}
+      ]
     }
 
     @entry = Rflak::Entry.new(@hash)
@@ -34,6 +47,10 @@ class EntryTest < Test::Unit::TestCase
 
   def test_new_object
     assert_kind_of(Rflak::User, @entry.user)
+    assert_kind_of(Array, @entry.comments)
+    @entry.comments.each do |comment|
+      assert_kind_of(Rflak::Comment, comment)
+    end
   end
 
 
@@ -52,7 +69,7 @@ class EntryTest < Test::Unit::TestCase
     user.should_receive(:authorized?).and_return(true)
     user.should_receive(:login).and_return('testuser')
     user.should_receive(:api_key).and_return('test_api_key')
-    response_body =  "\r\n\r\n{\"status\":{\"code\":\"200\",\"text\":\"OK\",\"info\":\"http:\\/\\/flaker.pl\\/f\\/2077989\"}}"
+    response_body =  "\r\n\r\n{\"status\":{\"code\":\"200\",\"text\":\"OK\",\"info\":\"http:\/\/flaker.pl\/f\/2077989\"}}"
     response = flexmock('response')
     response.should_receive(:body).and_return(response_body)
     flexmock(Net::HTTP).should_receive(:start).and_return(response)
