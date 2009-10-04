@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = 'rflak'
-  spec.version = '0.2'
+  spec.version = '0.3'
   spec.author = 'Sebastian Nowak'
   spec.email = 'sebastian.nowak@gmail.com'
   spec.platform = Gem::Platform::RUBY
