@@ -111,6 +111,25 @@ module Rflak
     end
 
 
+    # Add comment to entry. <tt>NotAuthorized</tt> exception will be raised if passed user is not
+    # authorized.
+    #
+    # user:: User
+    #
+    # content:: String
+    #
+    # returns:: Entry
+    def comment(user, content)
+      if Comment.create(self.id, user, content)
+        entry = Flaker.fetch("show") { |f| f.entry_id(self.id) ; f.comments(true) }.first
+        self.comments = entry.comments
+        return entry
+      else
+        self
+      end
+    end
+
+
     private
 
 
@@ -119,7 +138,9 @@ module Rflak
     # options:: Array of Hashes, default []
     def comments=(collection = [])
       @comments = [] and return if collection.empty?
-      @comments = collection.map { |comment_hash| Comment.new(comment_hash) }
+      @comments = collection.map do |comment_hash|
+        comment_hash.kind_of?(Rflak::Comment) ? comment_hash : Comment.new(comment_hash)
+      end
     end
   end
 end

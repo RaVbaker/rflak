@@ -47,3 +47,13 @@ Bookmark entry. Only authorized user can bookmark entry.
   entry = Flaker.fetch('show' { |f| f.entry_id(123456) }
   user = User.auth('my_login', 'my_api_key')
   entry.bookmark(user) if user
+
+Add comments to some entry:
+
+  entry = Rflak::Flaker.fetch("show") { |f| f.entry_id '2725807' ; f.comments true }.first
+  user = Rflak::User.auth('my_login','my_api_key')
+  entry.comment(user,'my comment here')
+  # or
+  Comment.create(entry, user, 'my comment here')
+  # or
+  Comment.create(entry.id, user, 'my comment here')

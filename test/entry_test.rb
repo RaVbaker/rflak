@@ -130,6 +130,25 @@ class EntryTest < Test::Unit::TestCase
   end
 
 
+  def test_comment
+    user = flexmock('user')
+    user.should_receive(:authorized?).and_return(true)
+    user.should_receive(:login).and_return('testuser')
+    user.should_receive(:api_key).and_return('test_api_key')
+
+    response = flexmock('response')
+    response.should_receive(:code).once.and_return("200")
+    flexmock(Net::HTTP).should_receive(:start).once.and_return(response)
+
+    entry_with_new_comment = @entry.clone
+    entry_with_new_comment.comments << Rflak::Comment.new(:text => "My comment")
+    flexmock(Rflak::Flaker).should_receive(:fetch).with("show", Proc).and_return([entry_with_new_comment])
+
+    resp = @entry.comment(user, "My comment")
+    assert_kind_of(Rflak::Entry, resp)
+  end
+
+
   protected
 
 
